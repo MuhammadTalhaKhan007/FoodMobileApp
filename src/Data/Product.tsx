@@ -1,4 +1,10 @@
-const pizza = [
+interface MyProduct {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+const pizza: MyProduct[] = [
   {
     id: 1,
     name: "Fajita",

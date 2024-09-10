@@ -9,7 +9,7 @@ import PizzaComponent from "@/src/Data/Pizza";
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <PizzaComponent />
+      <PizzaComponent MyProduct={pizza} />
     </View>
   );
 }
