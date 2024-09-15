@@ -5,10 +5,12 @@ import { Text, View } from "@/src/components/Themed";
 
 import pizza from "@/src/Data/Product";
 import PizzaComponent from "@/src/Data/Pizza";
+import TopMenuBar from "@/src/Data/TopMenuBar";
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
+      <TopMenuBar />
       <PizzaComponent MyProduct={pizza} />
     </View>
   );

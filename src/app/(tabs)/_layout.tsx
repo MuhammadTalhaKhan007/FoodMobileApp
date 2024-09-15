@@ -1,5 +1,8 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 
@@ -30,21 +33,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "Our Menu",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
+          headerTitleAlign: "center",
+          headerTitleStyle: { fontWeight: "bold" },
+          headerLeft: () => (
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
                     size={25}
                     color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    style={{ opacity: pressed ? 0.5 : 1, marginLeft: 10 }}
                   />
                 )}
               </Pressable>
             </Link>
+          ),
+          headerRight: () => (
+            <Pressable>
+              {({ pressed }) => (
+                <FontAwesomeIcon
+                  icon={faShoppingCart}
+                  size={25}
+                  color={Colors[colorScheme ?? "light"].text}
+                  style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
+                />
+              )}
+            </Pressable>
           ),
         }}
       />
