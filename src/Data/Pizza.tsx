@@ -1,5 +1,6 @@
 import { StyleSheet, Image } from "react-native";
 import { View, Text, FlatList, Pressable } from "react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 interface MyProduct {
   id: number;
   name: string;
@@ -12,15 +13,31 @@ interface MyProductProps {
 }
 
 const PizzaComponent = ({ MyProduct }: MyProductProps) => {
+  const navigation: any = useNavigation();
   return (
     <FlatList
       data={MyProduct}
       renderItem={({ item }) => (
-        <View style={styles.itemContainer}>
-          <Image source={{ uri: item.image }} style={styles.image} />
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.price}>{item.price}</Text>
-        </View>
+        <Pressable
+          onPress={() => {
+            console.log(item); // Log the item to console
+            navigation.navigate("ProductDetails", {
+              name: item.name,
+              image: item.image,
+              price: item.price,
+            }); // Navigate to ProductDetails and pass the product
+          }}
+          style={({ pressed }) => [
+            styles.itemContainer,
+            { opacity: pressed ? 0.9 : 1 }, // Change opacity on press for visual feedback
+          ]}
+        >
+          <View style={styles.textContainer}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.price}>{item.price}</Text>
+          </View>
+        </Pressable>
       )}
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
@@ -44,6 +61,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     marginBottom: 10,
+  },
+  textContainer: {
+    alignItems: "center",
+    marginTop: 5,
   },
   image: {
     width: "100%",
