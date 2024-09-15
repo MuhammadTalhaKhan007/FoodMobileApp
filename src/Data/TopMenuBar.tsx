@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-
+import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
+interface TopMenuBarProps {
+  setSelectedCategory: (category: string) => void;
+  selectedCategory: string;
+}
 const categories = ["Meals", "Sides", "Snacks", "Drinks"];
 
-export default function TopMenuBar() {
-  const [selectedCategory, setSelectedCategory] = useState("Meals");
-
+export default function TopMenuBar({
+  setSelectedCategory,
+  selectedCategory,
+}: TopMenuBarProps) {
   return (
     <View style={styles.sliderContainer}>
       <FlatList
@@ -19,7 +17,7 @@ export default function TopMenuBar() {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setSelectedCategory(item)}>
+          <Pressable onPress={() => setSelectedCategory(item)}>
             <View
               style={[
                 styles.categoryContainer,
@@ -35,7 +33,7 @@ export default function TopMenuBar() {
                 {item}
               </Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         )}
         keyExtractor={(item) => item}
       />
@@ -45,13 +43,14 @@ export default function TopMenuBar() {
 
 const styles = StyleSheet.create({
   sliderContainer: {
-    height: 50,
-    borderBottomWidth: 1,
+    height: 30,
+    borderBottomWidth: 0,
     borderBottomColor: "#ccc",
-    backgroundColor: "#fff",
+    marginBottom: 20,
+    marginTop: 20,
   },
   category: {
-    marginHorizontal: 35,
+    marginHorizontal: 33,
     fontSize: 17,
     fontWeight: "bold",
     color: "black",

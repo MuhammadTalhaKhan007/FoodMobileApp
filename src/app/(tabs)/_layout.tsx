@@ -1,22 +1,23 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { Platform, Pressable } from "react-native";
+import { FontAwesomeIcon as RNFontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { FontAwesomeIcon as WebFontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faShoppingCart,
+  faUtensils,
+  faHome,
+  faCommentDots,
+  faHeart,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
-
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/src/components/useColorScheme";
 import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+const FontAwesomeIcon =
+  Platform.OS === "web" ? WebFontAwesomeIcon : RNFontAwesomeIcon;
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -24,17 +25,63 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        tabBarActiveTintColor: "brown",
+        tabBarInactiveTintColor: "gray",
         headerShown: useClientOnlyValue(false, true),
       }}
     >
       <Tabs.Screen
+        name="liveChat"
+        options={{
+          title: "Live Chat",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faCommentDots}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faUser}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faHome}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="index"
         options={{
-          title: "Our Menu",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Menu",
+          headerTitle: "Our Menu",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faUtensils}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
+          ),
           headerTitleAlign: "center",
           headerTitleStyle: { fontWeight: "bold" },
           headerLeft: () => (
@@ -43,7 +90,7 @@ export default function TabLayout() {
                 {({ pressed }) => (
                   <FontAwesomeIcon
                     icon={faArrowLeft}
-                    size={25}
+                    size={Platform.OS === "web" ? ("25px" as any) : 25}
                     color={Colors[colorScheme ?? "light"].text}
                     style={{ opacity: pressed ? 0.5 : 1, marginLeft: 10 }}
                   />
@@ -56,7 +103,7 @@ export default function TabLayout() {
               {({ pressed }) => (
                 <FontAwesomeIcon
                   icon={faShoppingCart}
-                  size={25}
+                  size={Platform.OS === "web" ? ("25px" as any) : 25}
                   color={Colors[colorScheme ?? "light"].text}
                   style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
                 />
@@ -65,11 +112,18 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
-        name="two"
+        name="favorites"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Favorites",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faHeart}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
+          ),
         }}
       />
     </Tabs>
