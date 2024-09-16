@@ -14,6 +14,8 @@ interface MyProduct {
   name: string;
   price: string;
   image: string;
+  added: boolean;
+  type: string;
 }
 
 export default function TabOneScreen() {

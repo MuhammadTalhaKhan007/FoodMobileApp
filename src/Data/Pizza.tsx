@@ -6,6 +6,8 @@ interface MyProduct {
   name: string;
   price: string;
   image: string;
+  added: boolean;
+  type: string;
 }
 
 interface MyProductProps {
@@ -21,9 +23,12 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
         <Pressable
           onPress={() => {
             navigation.navigate("ProductDetails", {
+              id: item.id,
               name: item.name,
               image: item.image,
               price: item.price,
+              added: item.added,
+              type: item.type,
             });
           }}
           style={({ pressed }) => [
