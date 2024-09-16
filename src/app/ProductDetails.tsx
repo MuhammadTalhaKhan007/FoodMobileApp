@@ -3,9 +3,8 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
 const ProductDetails = () => {
-  let { name, price, image } = useLocalSearchParams(); // Get product parameter
+  let { name, price, image } = useLocalSearchParams();
 
-  console.log("Product object:", name);
   const imageUri = Array.isArray(image) ? image[0] : image;
   const defaultImage = "https://via.placeholder.com/200";
 

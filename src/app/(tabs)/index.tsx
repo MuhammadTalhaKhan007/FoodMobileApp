@@ -15,6 +15,7 @@ interface MyProduct {
   price: string;
   image: string;
 }
+
 export default function TabOneScreen() {
   const [selectedCategory, setSelectedCategory] = useState("Meals");
   const getProducts = (): MyProduct[] => {

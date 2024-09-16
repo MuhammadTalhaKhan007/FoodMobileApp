@@ -20,12 +20,11 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
       renderItem={({ item }) => (
         <Pressable
           onPress={() => {
-            console.log(item); // Log the item to console
             navigation.navigate("ProductDetails", {
               name: item.name,
               image: item.image,
               price: item.price,
-            }); // Navigate to ProductDetails and pass the product
+            });
           }}
           style={({ pressed }) => [
             styles.itemContainer,
