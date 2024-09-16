@@ -28,7 +28,7 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
           }}
           style={({ pressed }) => [
             styles.itemContainer,
-            { opacity: pressed ? 0.9 : 1 }, // Change opacity on press for visual feedback
+            { opacity: pressed ? 0.9 : 1 },
           ]}
         >
           <View style={styles.textContainer}>
