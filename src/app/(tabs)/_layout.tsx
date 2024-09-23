@@ -99,7 +99,7 @@ export default function TabLayout() {
             </Link>
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/Cart" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesomeIcon
