@@ -6,6 +6,7 @@ import Meals from "../Data/Meals";
 import Snacks from "../Data/Snacks";
 import Sides from "../Data/Sides";
 import Drinks from "../Data/Drinks";
+import Toast from "react-native-toast-message";
 
 const ProductDetails = () => {
   let { id, name, price, image, type } = useLocalSearchParams();
@@ -24,6 +25,20 @@ const ProductDetails = () => {
   const [added, setAdded] = useState(initialMeal?.added || false);
   const imageUri = Array.isArray(image) ? image[0] : image;
   const defaultImage = "https://via.placeholder.com/200";
+  const showAddToast = () => {
+    Toast.show({
+      type: "success",
+      text1: `${name} has been added to cart!`,
+      text2: "You can proceed to checkout 👋",
+    });
+  };
+  const showRemoveToast = () => {
+    Toast.show({
+      type: "info",
+      text1: `${name} has been removed from cart!`,
+      text2: "You can explore more items 🔍",
+    });
+  };
 
   const handlePress = () => {
     const newState = !added;
@@ -50,30 +65,35 @@ const ProductDetails = () => {
         Drinks[itemIndex].added = newState;
       }
     }
+    !added ? showAddToast() : showRemoveToast();
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={{ uri: imageUri ? imageUri : defaultImage }}
-        style={styles.image}
-      />
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.price}>{price}</Text>
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
-        <>
-          <Icon
-            name="cart-outline"
-            size={20}
-            color="#eee"
-            style={styles.icon}
-          />
-          <Text style={styles.buttonText}>
-            {added ? "Added" : "Add to cart"}
-          </Text>
-        </>
-      </TouchableOpacity>
-    </View>
+    <>
+      <View style={styles.container}>
+        <Image
+          source={{ uri: imageUri ? imageUri : defaultImage }}
+          style={styles.image}
+        />
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.price}>{price}</Text>
+        <TouchableOpacity style={styles.button} onPress={handlePress}>
+          <>
+            <Icon
+              name={added ? "cart" : "cart-outline"}
+              size={20}
+              color="#eee"
+              style={styles.icon}
+            />
+
+            <Text style={styles.buttonText}>
+              {added ? "Added" : "Add to cart"}
+            </Text>
+          </>
+        </TouchableOpacity>
+      </View>
+      <Toast />
+    </>
   );
 };
 
