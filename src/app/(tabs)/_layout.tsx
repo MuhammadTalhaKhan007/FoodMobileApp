@@ -99,16 +99,18 @@ export default function TabLayout() {
             </Link>
           ),
           headerRight: () => (
-            <Pressable>
-              {({ pressed }) => (
-                <FontAwesomeIcon
-                  icon={faShoppingCart}
-                  size={Platform.OS === "web" ? ("25px" as any) : 25}
-                  color={Colors[colorScheme ?? "light"].text}
-                  style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
-                />
-              )}
-            </Pressable>
+            <Link href="/modal" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesomeIcon
+                    icon={faShoppingCart}
+                    size={Platform.OS === "web" ? ("25px" as any) : 25}
+                    color={Colors[colorScheme ?? "light"].text}
+                    style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
           ),
         }}
       />
