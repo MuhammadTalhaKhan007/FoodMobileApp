@@ -36,6 +36,7 @@ export default function CartScreen() {
     drinks: [],
   });
   const [loading, setLoading] = useState(true);
+
   const loadProducts = async (category: string) => {
     try {
       const data = await AsyncStorage.getItem(category);
@@ -76,16 +77,21 @@ export default function CartScreen() {
   useEffect(() => {
     loadAllProducts();
   }, []);
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading your cart...</Text>
-      </View>
-    );
-  }
+
+  const calculateTotalAmount = () => {
+    let total = 0;
+    Object.values(cartItems).forEach((items) => {
+      items.forEach((item: MyProduct) => {
+        total += item.price * item.quantity;
+      });
+    });
+    return total.toFixed(2);
+  };
+
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
+
   const saveItemsToAsyncStorage = async (
     category: string,
     updatedItems: MyProduct[]
@@ -151,6 +157,7 @@ export default function CartScreen() {
       };
     });
   };
+
   const renderCartItem = ({
     item,
     section,
@@ -231,6 +238,14 @@ export default function CartScreen() {
         />
       )}
 
+      {Object.values(cartItems).some((section) => section.length > 0) && (
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>
+            Total Amount: ${calculateTotalAmount()}
+          </Text>
+        </View>
+      )}
+
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );
@@ -270,52 +285,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     height: 1,
     width: "80%",
-    backgroundColor: "#eee",
-  },
-  itemContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  itemImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  itemDetails: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  itemPrice: {
-    fontSize: 16,
-    color: "#888",
-  },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  quantityButton: {
-    width: 30,
-    height: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ddd",
-    borderRadius: 15,
-  },
-  quantityText: {
-    fontSize: 20,
-    color: "#333",
-  },
-  quantity: {
-    marginHorizontal: 10,
-    fontSize: 16,
+    backgroundColor: "#CED0CE",
+    alignSelf: "center",
   },
   sectionHeader: {
     fontSize: 18,
@@ -330,6 +301,57 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     color: "#888",
   },
+  itemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+  },
+  itemDetails: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  itemName: {
+    fontSize: 16,
+  },
+  itemPrice: {
+    fontSize: 14,
+    color: "green",
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quantityButton: {
+    backgroundColor: "#ddd",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  quantityText: {
+    fontSize: 18,
+  },
+  quantity: {
+    marginHorizontal: 10,
+    fontSize: 16,
+  },
+  totalContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 5,
+    backgroundColor: "#f0f0f0",
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
   listContent: {
     paddingBottom: 80,
   },
