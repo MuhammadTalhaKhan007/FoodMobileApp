@@ -1,5 +1,12 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import Meals from "../Data/Meals";
@@ -8,17 +15,53 @@ import Sides from "../Data/Sides";
 import Drinks from "../Data/Drinks";
 
 export default function CartScreen() {
-  const cartItems = [
+  const [cartItems, setCartItems] = useState([
     ...Meals.filter((item) => item.added),
     ...Snacks.filter((item) => item.added),
     ...Sides.filter((item) => item.added),
     ...Drinks.filter((item) => item.added),
-  ];
+  ]);
+
+  const handleIncreaseQuantity = (id: number) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === Number(id) ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const handleDecreaseQuantity = (id: number) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === Number(id) && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
 
   const renderCartItem = ({ item }: any) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemPrice}>{item.price}</Text>
+      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      <View style={styles.itemDetails}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+      </View>
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity
+          onPress={() => handleDecreaseQuantity(item.id)}
+          style={styles.quantityButton}
+        >
+          <Text style={styles.quantityText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.quantity}>{item.quantity}</Text>
+        <TouchableOpacity
+          onPress={() => handleIncreaseQuantity(item.id)}
+          style={styles.quantityButton}
+        >
+          <Text style={styles.quantityText}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -52,8 +95,6 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
   cartTitleContainer: {
@@ -89,16 +130,46 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
+    alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
+  itemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  itemDetails: {
+    flex: 1,
+    marginLeft: 10,
+  },
   itemName: {
     fontSize: 16,
+    fontWeight: "bold",
   },
   itemPrice: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#888",
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quantityButton: {
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ddd",
+    borderRadius: 15,
+  },
+  quantityText: {
+    fontSize: 20,
+    color: "#333",
+  },
+  quantity: {
+    marginHorizontal: 10,
+    fontSize: 16,
   },
 });

@@ -4,10 +4,11 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 interface MyProduct {
   id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
   added: boolean;
   type: string;
+  quantity: number;
 }
 
 interface MyProductProps {
@@ -39,7 +40,7 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
           <View style={styles.textContainer}>
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.price}>{item.price}</Text>
+            <Text style={styles.price}>${item.price}</Text>
           </View>
         </Pressable>
       )}
