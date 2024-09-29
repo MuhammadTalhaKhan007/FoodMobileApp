@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Platform, Pressable, StyleSheet, View, Text } from "react-native";
 import { FontAwesomeIcon as RNFontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { FontAwesomeIcon as WebFontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,28 +20,61 @@ import Snacks from "../../Data/Snacks";
 import Sides from "../../Data/Sides";
 import Drinks from "../../Data/Drinks";
 import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const FontAwesomeIcon =
   Platform.OS === "web" ? WebFontAwesomeIcon : RNFontAwesomeIcon;
 
+interface MyProduct {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  added: boolean;
+  quantity: number;
+}
+
+interface CartItems {
+  meals: MyProduct[];
+  snacks: MyProduct[];
+  sides: MyProduct[];
+  drinks: MyProduct[];
+}
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const cartItems = [
-    ...Meals.filter((item) => item.added),
-    ...Snacks.filter((item) => item.added),
-    ...Sides.filter((item) => item.added),
-    ...Drinks.filter((item) => item.added),
-  ];
-  const [cartItemCount, setCartItemCount] = useState(cartItems.length);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  // Function to get all items from AsyncStorage and filter added items
+  const getCartItems = async () => {
+    try {
+      const mealsData = await AsyncStorage.getItem("Meals");
+      const snacksData = await AsyncStorage.getItem("Snacks");
+      const sidesData = await AsyncStorage.getItem("Sides");
+      const drinksData = await AsyncStorage.getItem("Drinks");
+
+      const meals = mealsData ? JSON.parse(mealsData) : [];
+      const snacks = snacksData ? JSON.parse(snacksData) : [];
+      const sides = sidesData ? JSON.parse(sidesData) : [];
+      const drinks = drinksData ? JSON.parse(drinksData) : [];
+
+      const cartItems = [
+        ...meals.filter((item: MyProduct) => item.added),
+        ...snacks.filter((item: MyProduct) => item.added),
+        ...sides.filter((item: MyProduct) => item.added),
+        ...drinks.filter((item: MyProduct) => item.added),
+      ];
+
+      return cartItems;
+    } catch (error) {
+      console.error("Error retrieving cart items from AsyncStorage:", error);
+      return [];
+    }
+  };
 
   useFocusEffect(
-    React.useCallback(() => {
-      const updateCartItemCount = () => {
-        const updatedCartItems = [
-          ...Meals.filter((item) => item.added),
-          ...Snacks.filter((item) => item.added),
-          ...Sides.filter((item) => item.added),
-          ...Drinks.filter((item) => item.added),
-        ];
+    useCallback(() => {
+      const updateCartItemCount = async () => {
+        const updatedCartItems = await getCartItems();
         setCartItemCount(updatedCartItems.length);
       };
 

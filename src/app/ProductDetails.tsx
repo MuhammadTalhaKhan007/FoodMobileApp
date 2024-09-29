@@ -1,37 +1,51 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import Icon from "react-native-vector-icons/Ionicons";
-import Meals from "../Data/Meals";
-import Snacks from "../Data/Snacks";
-import Sides from "../Data/Sides";
-import Drinks from "../Data/Drinks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 
+interface MyProduct {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  added: boolean;
+  quantity: number;
+}
+
+interface CartItems {
+  meals: MyProduct[];
+  snacks: MyProduct[];
+  sides: MyProduct[];
+  drinks: MyProduct[];
+}
+
 const ProductDetails = () => {
-  let { id, name, price, image, type } = useLocalSearchParams();
+  const { id, name, price, image, type } = useLocalSearchParams();
 
-  let initialMeal;
-  if (type === "Meals") {
-    initialMeal = Meals.find((item) => item.id === Number(id));
-  } else if (type === "Snacks") {
-    initialMeal = Snacks.find((item) => item.id === Number(id));
-  } else if (type === "Drinks") {
-    initialMeal = Drinks.find((item) => item.id === Number(id));
-  } else if (type === "Sides") {
-    initialMeal = Sides.find((item) => item.id === Number(id));
-  }
-
-  const [added, setAdded] = useState(initialMeal?.added || false);
+  const [added, setAdded] = useState(false);
   const imageUri = Array.isArray(image) ? image[0] : image;
   const defaultImage = "https://via.placeholder.com/200";
+
+  useEffect(() => {
+    const loadProductState = async () => {
+      try {
+        const data = await AsyncStorage.getItem(String(type));
+        const products = data ? JSON.parse(data) : [];
+        const product = products.find(
+          (item: MyProduct) => item.id === Number(id)
+        );
+        setAdded(product?.added || false);
+      } catch (error) {
+        console.error("Error loading product state:", error);
+      }
+    };
+
+    loadProductState();
+  }, [id, type]);
+
+  // Show toast messages
   const showAddToast = () => {
     Toast.show({
       type: "success",
@@ -39,6 +53,7 @@ const ProductDetails = () => {
       text2: "You can proceed to checkout 👋",
     });
   };
+
   const showRemoveToast = () => {
     Toast.show({
       type: "info",
@@ -47,32 +62,25 @@ const ProductDetails = () => {
     });
   };
 
-  const handlePress = () => {
-    const newState = !added;
-    setAdded(newState);
+  const handlePress = async () => {
+    try {
+      const data = await AsyncStorage.getItem(String(type));
+      const products = data ? JSON.parse(data) : [];
+      const productIndex = products.findIndex(
+        (item: MyProduct) => item.id === Number(id)
+      );
 
-    if (type === "Meals") {
-      const itemIndex = Meals.findIndex((item) => item.id === Number(id));
-      if (itemIndex !== -1) {
-        Meals[itemIndex].added = newState;
+      if (productIndex !== -1) {
+        products[productIndex].added = !added;
       }
-    } else if (type === "Snacks") {
-      const itemIndex = Snacks.findIndex((item) => item.id === Number(id));
-      if (itemIndex !== -1) {
-        Snacks[itemIndex].added = newState;
-      }
-    } else if (type === "Sides") {
-      const itemIndex = Sides.findIndex((item) => item.id === Number(id));
-      if (itemIndex !== -1) {
-        Sides[itemIndex].added = newState;
-      }
-    } else if (type === "Drinks") {
-      const itemIndex = Drinks.findIndex((item) => item.id === Number(id));
-      if (itemIndex !== -1) {
-        Drinks[itemIndex].added = newState;
-      }
+
+      await AsyncStorage.setItem(String(type), JSON.stringify(products));
+      setAdded(!added);
+
+      !added ? showAddToast() : showRemoveToast();
+    } catch (error) {
+      console.error("Error updating cart:", error);
     }
-    !added ? showAddToast() : showRemoveToast();
   };
 
   return (
@@ -85,18 +93,15 @@ const ProductDetails = () => {
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.price}>${price}</Text>
         <TouchableOpacity style={styles.button} onPress={handlePress}>
-          <>
-            <Icon
-              name={added ? "cart" : "cart-outline"}
-              size={20}
-              color="#eee"
-              style={styles.icon}
-            />
-
-            <Text style={styles.buttonText}>
-              {added ? "Added" : "Add to cart"}
-            </Text>
-          </>
+          <Icon
+            name={added ? "cart" : "cart-outline"}
+            size={20}
+            color="#eee"
+            style={styles.icon}
+          />
+          <Text style={styles.buttonText}>
+            {added ? "Added" : "Add to cart"}
+          </Text>
         </TouchableOpacity>
       </View>
       <Toast />
