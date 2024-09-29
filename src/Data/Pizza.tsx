@@ -27,7 +27,7 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
               id: item.id,
               name: item.name,
               image: item.image,
-              price: item.price,
+              price: Number(item.price),
               added: item.added,
               type: item.type,
             });

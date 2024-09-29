@@ -76,7 +76,7 @@ const ProductDetails = () => {
           style={styles.image}
         />
         <Text style={styles.name}>{name}</Text>
-        <Text style={styles.price}>{price}</Text>
+        <Text style={styles.price}>${price}</Text>
         <TouchableOpacity style={styles.button} onPress={handlePress}>
           <>
             <Icon

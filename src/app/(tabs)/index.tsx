@@ -12,10 +12,11 @@ import TopMenuBar from "@/src/Data/TopMenuBar";
 interface MyProduct {
   id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
   added: boolean;
   type: string;
+  quantity: number;
 }
 
 export default function TabOneScreen() {
