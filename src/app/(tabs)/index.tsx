@@ -4,7 +4,10 @@ import { Text, View } from "@/src/components/Themed";
 import PizzaComponent from "@/src/Data/Pizza";
 import TopMenuBar from "@/src/Data/TopMenuBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import cat1 from "../../Data/Meals";
+import cat2 from "../../Data/Snacks";
+import cat3 from "../../Data/Drinks";
+import cat4 from "../../Data/Sides";
 interface MyProduct {
   id: number;
   name: string;
@@ -43,6 +46,13 @@ export default function TabOneScreen() {
     setLoading(true);
     loadProducts(selectedCategory);
   }, [selectedCategory]);
+  // Just to initialize the data in AsyncStorage
+  useEffect(() => {
+    cat1;
+    cat2;
+    cat3;
+    cat4;
+  });
 
   return (
     <View style={styles.wrapper}>

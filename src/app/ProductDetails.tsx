@@ -23,7 +23,6 @@ interface CartItems {
 
 const ProductDetails = () => {
   const { id, name, price, image, type } = useLocalSearchParams();
-
   const [added, setAdded] = useState(false);
   const imageUri = Array.isArray(image) ? image[0] : image;
   const defaultImage = "https://via.placeholder.com/200";
@@ -45,7 +44,6 @@ const ProductDetails = () => {
     loadProductState();
   }, [id, type]);
 
-  // Show toast messages
   const showAddToast = () => {
     Toast.show({
       type: "success",
@@ -72,6 +70,7 @@ const ProductDetails = () => {
 
       if (productIndex !== -1) {
         products[productIndex].added = !added;
+        products[productIndex].quantity += 1;
       }
 
       await AsyncStorage.setItem(String(type), JSON.stringify(products));
