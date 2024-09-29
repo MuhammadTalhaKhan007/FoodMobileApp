@@ -70,7 +70,11 @@ const ProductDetails = () => {
 
       if (productIndex !== -1) {
         products[productIndex].added = !added;
-        products[productIndex].quantity += 1;
+        if (products[productIndex].added === true) {
+          products[productIndex].quantity += 1;
+        } else {
+          products[productIndex].quantity -= 1;
+        }
       }
 
       await AsyncStorage.setItem(String(type), JSON.stringify(products));
