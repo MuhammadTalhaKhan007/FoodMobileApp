@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   listContent: {
-    paddingBottom: 80,
+    paddingBottom: 10,
   },
 });
 
