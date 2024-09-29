@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 interface MyProduct {
   id: number;
   name: string;
@@ -70,4 +72,21 @@ const sides: MyProduct[] = [
   },
 ];
 
+AsyncStorage.getItem("Sides")
+  .then((isSidesSet) => {
+    if (!isSidesSet) {
+      AsyncStorage.setItem("Sides", JSON.stringify(sides))
+        .then(() => {
+          console.log("Sides data initialized.");
+        })
+        .catch((error) => {
+          console.error("Error setting Sides:", error);
+        });
+    } else {
+      console.log("Sides data already exists.");
+    }
+  })
+  .catch((error) => {
+    console.error("Error retrieving Sides:", error);
+  });
 export default sides;

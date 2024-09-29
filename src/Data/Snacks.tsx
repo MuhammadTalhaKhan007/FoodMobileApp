@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 interface MyProduct {
   id: number;
   name: string;
@@ -69,5 +71,22 @@ const snacks: MyProduct[] = [
     quantity: 0,
   },
 ];
+AsyncStorage.getItem("Snacks")
+  .then((isSnacksSet) => {
+    if (!isSnacksSet) {
+      AsyncStorage.setItem("Snacks", JSON.stringify(snacks))
+        .then(() => {
+          console.log("Snacks data initialized.");
+        })
+        .catch((error) => {
+          console.error("Error setting Snacks:", error);
+        });
+    } else {
+      console.log("Snacks data already exists.");
+    }
+  })
+  .catch((error) => {
+    console.error("Error retrieving Snacks:", error);
+  });
 
 export default snacks;

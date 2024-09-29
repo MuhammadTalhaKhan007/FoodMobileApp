@@ -71,6 +71,23 @@ const drinks: MyProduct[] = [
     quantity: 0,
   },
 ];
-AsyncStorage.setItem("Drinks", JSON.stringify(drinks));
+
+AsyncStorage.getItem("Drinks")
+  .then((isDrinksSet) => {
+    if (!isDrinksSet) {
+      AsyncStorage.setItem("Drinks", JSON.stringify(drinks))
+        .then(() => {
+          console.log("Drinks data initialized.");
+        })
+        .catch((error) => {
+          console.error("Error setting Drinks:", error);
+        });
+    } else {
+      console.log("Drinks data already exists.");
+    }
+  })
+  .catch((error) => {
+    console.error("Error retrieving Drinks:", error);
+  });
 
 export default drinks;

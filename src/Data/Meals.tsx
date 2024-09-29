@@ -71,9 +71,22 @@ const meals: MyProduct[] = [
     quantity: 0,
   },
 ];
-const isMealsSet = AsyncStorage.getItem("Meals");
-if (!isMealsSet) {
-  AsyncStorage.setItem("Meals", JSON.stringify(meals));
-}
+AsyncStorage.getItem("Meals")
+  .then((isMealsSet) => {
+    if (!isMealsSet) {
+      AsyncStorage.setItem("Meals", JSON.stringify(meals))
+        .then(() => {
+          console.log("Meals data initialized.");
+        })
+        .catch((error) => {
+          console.error("Error setting Meals:", error);
+        });
+    } else {
+      console.log("Meals data already exists.");
+    }
+  })
+  .catch((error) => {
+    console.error("Error retrieving Meals:", error);
+  });
 
 export default meals;
