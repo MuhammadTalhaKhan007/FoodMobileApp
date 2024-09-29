@@ -17,6 +17,9 @@ interface MyProductProps {
 
 const PizzaComponent = ({ MyProduct }: MyProductProps) => {
   const navigation: any = useNavigation();
+  const numericPrice = (numericPrice: number): string => {
+    return numericPrice.toFixed(2);
+  };
   return (
     <FlatList
       data={MyProduct}
@@ -40,7 +43,7 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
           <View style={styles.textContainer}>
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.price}>${numericPrice(item.price)}</Text>
           </View>
         </Pressable>
       )}

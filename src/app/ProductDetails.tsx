@@ -85,6 +85,9 @@ const ProductDetails = () => {
       console.error("Error updating cart:", error);
     }
   };
+  const numericPrice = (numericPrice: number): string => {
+    return numericPrice.toFixed(2);
+  };
 
   return (
     <>
@@ -94,7 +97,7 @@ const ProductDetails = () => {
           style={styles.image}
         />
         <Text style={styles.name}>{name}</Text>
-        <Text style={styles.price}>${price}</Text>
+        <Text style={styles.price}>${numericPrice(Number(price))}</Text>
         <TouchableOpacity style={styles.button} onPress={handlePress}>
           <Icon
             name={added ? "cart" : "cart-outline"}
