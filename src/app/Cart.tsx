@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   cartTitleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,
