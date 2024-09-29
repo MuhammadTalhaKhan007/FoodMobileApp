@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 interface MyProduct {
   id: number;
   name: string;
@@ -69,5 +71,6 @@ const drinks: MyProduct[] = [
     quantity: 0,
   },
 ];
+AsyncStorage.setItem("Drinks", JSON.stringify(drinks));
 
 export default drinks;
