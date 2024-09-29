@@ -1,5 +1,5 @@
-import React from "react";
-import { Platform, Pressable } from "react-native";
+import React, { useState } from "react";
+import { Platform, Pressable, StyleSheet, View, Text } from "react-native";
 import { FontAwesomeIcon as RNFontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { FontAwesomeIcon as WebFontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,12 +15,22 @@ import { Link, Tabs } from "expo-router";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/src/components/useColorScheme";
 import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
-
+import Meals from "../../Data/Meals";
+import Snacks from "../../Data/Snacks";
+import Sides from "../../Data/Sides";
+import Drinks from "../../Data/Drinks";
 const FontAwesomeIcon =
   Platform.OS === "web" ? WebFontAwesomeIcon : RNFontAwesomeIcon;
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const cartItems = [
+    ...Meals.filter((item) => item.added),
+    ...Snacks.filter((item) => item.added),
+    ...Sides.filter((item) => item.added),
+    ...Drinks.filter((item) => item.added),
+  ];
+  const [cartItemCount, setCartItemCount] = useState(cartItems.length);
 
   return (
     <Tabs
@@ -102,12 +112,19 @@ export default function TabLayout() {
             <Link href="/Cart" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesomeIcon
-                    icon={faShoppingCart}
-                    size={Platform.OS === "web" ? ("25px" as any) : 25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
-                  />
+                  <View style={{ position: "relative" }}>
+                    <FontAwesomeIcon
+                      icon={faShoppingCart}
+                      size={Platform.OS === "web" ? ("25px" as any) : 25}
+                      color={Colors[colorScheme ?? "light"].text}
+                      style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
+                    />
+                    {cartItemCount > 0 && (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{cartItemCount}</Text>
+                      </View>
+                    )}
+                  </View>
                 )}
               </Pressable>
             </Link>
@@ -131,3 +148,21 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+const styles = StyleSheet.create({
+  badge: {
+    position: "absolute",
+    right: 3,
+    top: -9,
+    backgroundColor: "red",
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badgeText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+});
