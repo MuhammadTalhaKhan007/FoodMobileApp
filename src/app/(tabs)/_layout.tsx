@@ -19,6 +19,7 @@ import Meals from "../../Data/Meals";
 import Snacks from "../../Data/Snacks";
 import Sides from "../../Data/Sides";
 import Drinks from "../../Data/Drinks";
+import { useFocusEffect } from "@react-navigation/native";
 const FontAwesomeIcon =
   Platform.OS === "web" ? WebFontAwesomeIcon : RNFontAwesomeIcon;
 
@@ -31,6 +32,22 @@ export default function TabLayout() {
     ...Drinks.filter((item) => item.added),
   ];
   const [cartItemCount, setCartItemCount] = useState(cartItems.length);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const updateCartItemCount = () => {
+        const updatedCartItems = [
+          ...Meals.filter((item) => item.added),
+          ...Snacks.filter((item) => item.added),
+          ...Sides.filter((item) => item.added),
+          ...Drinks.filter((item) => item.added),
+        ];
+        setCartItemCount(updatedCartItems.length);
+      };
+
+      updateCartItemCount();
+    }, [])
+  );
 
   return (
     <Tabs
