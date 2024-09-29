@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,10 +10,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
-import Meals from "../Data/Meals";
-import Snacks from "../Data/Snacks";
-import Sides from "../Data/Sides";
-import Drinks from "../Data/Drinks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface MyProduct {
   id: number;
@@ -33,11 +30,59 @@ interface CartItems {
 
 export default function CartScreen() {
   const [cartItems, setCartItems] = useState<CartItems>({
-    meals: Meals.filter((item) => item.added),
-    snacks: Snacks.filter((item) => item.added),
-    sides: Sides.filter((item) => item.added),
-    drinks: Drinks.filter((item) => item.added),
+    meals: [],
+    snacks: [],
+    sides: [],
+    drinks: [],
   });
+  const [loading, setLoading] = useState(true);
+  const loadProducts = async (category: string) => {
+    try {
+      const data = await AsyncStorage.getItem(category);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        console.log(`No data found for ${category}`);
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error retrieving ${category} data:`, error);
+      return [];
+    }
+  };
+
+  const loadAllProducts = async () => {
+    try {
+      const [meals, snacks, sides, drinks] = await Promise.all([
+        loadProducts("Meals"),
+        loadProducts("Snacks"),
+        loadProducts("Sides"),
+        loadProducts("Drinks"),
+      ]);
+
+      setCartItems({
+        meals: meals.filter((item: MyProduct) => item.added),
+        snacks: snacks.filter((item: MyProduct) => item.added),
+        sides: sides.filter((item: MyProduct) => item.added),
+        drinks: drinks.filter((item: MyProduct) => item.added),
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading products:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAllProducts();
+  }, []);
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading your cart...</Text>
+      </View>
+    );
+  }
 
   const handleIncreaseQuantity = (id: number, sectionKey: keyof CartItems) => {
     setCartItems((prevItems) => ({
