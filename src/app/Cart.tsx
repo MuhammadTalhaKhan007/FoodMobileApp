@@ -83,27 +83,74 @@ export default function CartScreen() {
       </View>
     );
   }
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  const saveItemsToAsyncStorage = async (
+    category: string,
+    updatedItems: MyProduct[]
+  ) => {
+    const storageCategory = capitalizeFirstLetter(category);
+    try {
+      const existingData = await AsyncStorage.getItem(storageCategory);
+      let currentItems: MyProduct[] = [];
 
-  const handleIncreaseQuantity = (id: number, sectionKey: keyof CartItems) => {
-    setCartItems((prevItems) => ({
-      ...prevItems,
-      [sectionKey]: prevItems[sectionKey].map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      ),
-    }));
+      if (existingData) {
+        currentItems = JSON.parse(existingData);
+      }
+
+      const mergedItems = currentItems.map((item) => {
+        const updatedItem = updatedItems.find((i) => i.id === item.id);
+        return updatedItem ? updatedItem : item; // Return updated item or existing item
+      });
+
+      updatedItems.forEach((item) => {
+        if (!currentItems.some((i) => i.id === item.id)) {
+          mergedItems.push(item);
+        }
+      });
+      await AsyncStorage.setItem(storageCategory, JSON.stringify(mergedItems));
+    } catch (error) {
+      console.error(`Error saving ${storageCategory} to AsyncStorage:`, error);
+    }
   };
 
-  const handleDecreaseQuantity = (id: number, sectionKey: keyof CartItems) => {
-    setCartItems((prevItems) => ({
-      ...prevItems,
-      [sectionKey]: prevItems[sectionKey].map((item) =>
+  const handleIncreaseQuantity = async (
+    id: number,
+    sectionKey: keyof CartItems
+  ) => {
+    setCartItems((prevItems) => {
+      const updatedSection = prevItems[sectionKey].map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+      saveItemsToAsyncStorage(sectionKey, updatedSection);
+
+      return {
+        ...prevItems,
+        [sectionKey]: updatedSection,
+      };
+    });
+  };
+
+  const handleDecreaseQuantity = async (
+    id: number,
+    sectionKey: keyof CartItems
+  ) => {
+    setCartItems((prevItems) => {
+      const updatedSection = prevItems[sectionKey].map((item) =>
         item.id === id && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
-      ),
-    }));
-  };
+      );
 
+      saveItemsToAsyncStorage(sectionKey, updatedSection);
+
+      return {
+        ...prevItems,
+        [sectionKey]: updatedSection,
+      };
+    });
+  };
   const renderCartItem = ({
     item,
     section,

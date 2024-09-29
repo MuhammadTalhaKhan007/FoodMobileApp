@@ -1,6 +1,12 @@
 import { StyleSheet, Image } from "react-native";
 import { View, Text, FlatList, Pressable } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 interface MyProduct {
   id: number;
   name: string;
@@ -20,6 +26,7 @@ const PizzaComponent = ({ MyProduct }: MyProductProps) => {
   const numericPrice = (numericPrice: number): string => {
     return numericPrice.toFixed(2);
   };
+
   return (
     <FlatList
       data={MyProduct}

@@ -71,6 +71,7 @@ const drinks: MyProduct[] = [
     quantity: 0,
   },
 ];
+
 AsyncStorage.getItem("Drinks")
   .then((isDrinksSet) => {
     if (!isDrinksSet) {
