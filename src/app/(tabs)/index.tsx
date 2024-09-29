@@ -46,6 +46,7 @@ export default function TabOneScreen() {
     setLoading(true);
     loadProducts(selectedCategory);
   }, [selectedCategory]);
+
   // Just to initialize the data in AsyncStorage
   useEffect(() => {
     cat1;
