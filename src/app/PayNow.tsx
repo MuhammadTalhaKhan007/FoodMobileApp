@@ -21,6 +21,8 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { PaymentMethod, useStripe } from "@stripe/stripe-react-native";
 import { StripeProvider, usePaymentSheet } from "@stripe/stripe-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 
 const s = StyleSheet.create({
   container: {
@@ -90,15 +92,68 @@ const s = StyleSheet.create({
   },
 });
 
-const toStatusIcon = (status?: ValidationState) =>
-  status === "valid" ? "✅" : status === "invalid" ? "❌" : "❓";
+interface MyProduct {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  added: boolean;
+  type: string;
+  quantity: number;
+}
 
 export default function PayNowScreen() {
   const { initPaymentSheet, presentPaymentSheet, loading } = usePaymentSheet();
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [meals, setMeals] = useState<MyProduct[] | null>(null);
+  const [snacks, setSnacks] = useState<MyProduct[] | null>(null);
+  const [drinks, setDrinks] = useState<MyProduct[] | null>(null);
+  const [sides, setSides] = useState<MyProduct[] | null>(null);
   const [useLiteInput, setUseLiteInput] = useState(false);
   const [focusedField, setFocusedField] = useState<CreditCardFormField>();
   const [formData, setFormData] = useState<CreditCardFormData>();
   const stripe = useStripe();
+  const loadProducts = async () => {
+    try {
+      const mealData = await AsyncStorage.getItem("Meals");
+      const sideData = await AsyncStorage.getItem("Sides");
+      const drinkData = await AsyncStorage.getItem("Drinks");
+      const snackData = await AsyncStorage.getItem("Snacks");
+
+      setMeals(mealData ? JSON.parse(mealData) : []);
+      setSides(sideData ? JSON.parse(sideData) : []);
+      setDrinks(drinkData ? JSON.parse(drinkData) : []);
+      setSnacks(snackData ? JSON.parse(snackData) : []);
+    } catch (error) {
+      console.error("Error retrieving data:", error);
+    }
+  };
+
+  const resetAllItems = async () => {
+    await loadProducts();
+
+    const resetItems = (items: MyProduct[]) =>
+      items?.map((item) => ({
+        ...item,
+        quantity: 0,
+        added: false,
+      }));
+    const updatedDrinks = resetItems(drinks || []);
+    const updatedMeals = resetItems(meals || []);
+    const updatedSides = resetItems(sides || []);
+    const updatedSnacks = resetItems(snacks || []);
+    try {
+      await AsyncStorage.multiSet([
+        ["Drinks", JSON.stringify(updatedDrinks)],
+        ["Meals", JSON.stringify(updatedMeals)],
+        ["Sides", JSON.stringify(updatedSides)],
+        ["Snacks", JSON.stringify(updatedSnacks)],
+      ]);
+      navigation.navigate("index");
+    } catch (error) {
+      console.error("Failed to reset AsyncStorage values:", error);
+    }
+  };
 
   useEffect(() => {
     const initializePaymentSheetAsync = async () => {
@@ -143,9 +198,12 @@ export default function PayNowScreen() {
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
-      Alert.alert("Success", "The payment was confirmed successfully");
+      Alert.alert("Success ✅", "The payment was confirmed successfully");
+      console.log(`Meals Array: ${meals}`);
+      resetAllItems();
     }
   }
+
   const publishKey =
     "pk_test_51PJTtkGUY0qZiMwJH9HOgpa6cZXi7FgXa8MYBAtyxD99Xa8iBgqDcTOEVDTY4URxNR3b0eh93NRzdKSOUIDo9myA00bUcvFNgf";
 

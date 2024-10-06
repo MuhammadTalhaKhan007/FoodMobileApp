@@ -270,15 +270,19 @@ export default function CartScreen() {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("PayNow", {});
-          }}
-          style={styles.button}
-        >
-          <Icon name={"card"} size={20} color="#eee" style={styles.icon} />
-          <Text style={styles.buttonText}>{"Proceed to Payment"}</Text>
-        </TouchableOpacity>
+        {Object.values(cartItems).every((section) => section.length === 0) ? (
+          <></>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("PayNow", {});
+            }}
+            style={styles.button}
+          >
+            <Icon name={"card"} size={20} color="#eee" style={styles.icon} />
+            <Text style={styles.buttonText}>{"Proceed to Payment"}</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
