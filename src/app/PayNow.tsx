@@ -23,6 +23,7 @@ import { PaymentMethod, useStripe } from "@stripe/stripe-react-native";
 import { StripeProvider, usePaymentSheet } from "@stripe/stripe-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 
 const s = StyleSheet.create({
   container: {
@@ -109,6 +110,7 @@ export default function PayNowScreen() {
   const [snacks, setSnacks] = useState<MyProduct[] | null>(null);
   const [drinks, setDrinks] = useState<MyProduct[] | null>(null);
   const [sides, setSides] = useState<MyProduct[] | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number | string>(0);
   const [useLiteInput, setUseLiteInput] = useState(false);
   const [focusedField, setFocusedField] = useState<CreditCardFormField>();
   const [formData, setFormData] = useState<CreditCardFormData>();
@@ -118,11 +120,13 @@ export default function PayNowScreen() {
       const sideData = await AsyncStorage.getItem("Sides");
       const drinkData = await AsyncStorage.getItem("Drinks");
       const snackData = await AsyncStorage.getItem("Snacks");
+      const amountData = await AsyncStorage.getItem("Total Amount");
 
       setMeals(mealData && JSON.parse(mealData));
       setSides(sideData && JSON.parse(sideData));
       setDrinks(drinkData && JSON.parse(drinkData));
       setSnacks(snackData && JSON.parse(snackData));
+      setTotalAmount(amountData ? JSON.parse(amountData) : 0);
     } catch (error) {
       console.error("Error retrieving data:", error);
     }
@@ -154,12 +158,10 @@ export default function PayNowScreen() {
 
   useEffect(() => {
     const initializePaymentSheetAsync = async () => {
+      await loadProducts();
       await initializePaymentSheet();
     };
     initializePaymentSheetAsync();
-  }, []);
-  useEffect(() => {
-    loadProducts();
   }, []);
 
   const initializePaymentSheet = async () => {
@@ -179,11 +181,16 @@ export default function PayNowScreen() {
     }
   };
   const fetchPaymentSheetParams = async () => {
+    const amountData = await AsyncStorage.getItem("Total Amount");
+    const totalAmount = amountData ? JSON.parse(amountData) : 0;
     const response = await fetch("http://10.0.2.2:3000/payment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        total: totalAmount,
+      }),
     });
     const { paymentIntent, ephemeralKey, customer } = await response.json();
     return {
