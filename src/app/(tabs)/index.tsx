@@ -8,6 +8,7 @@ import cat1 from "../../Data/Meals";
 import cat2 from "../../Data/Snacks";
 import cat3 from "../../Data/Drinks";
 import cat4 from "../../Data/Sides";
+
 interface MyProduct {
   id: number;
   name: string;
