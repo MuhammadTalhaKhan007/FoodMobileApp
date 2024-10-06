@@ -112,7 +112,6 @@ export default function PayNowScreen() {
   const [useLiteInput, setUseLiteInput] = useState(false);
   const [focusedField, setFocusedField] = useState<CreditCardFormField>();
   const [formData, setFormData] = useState<CreditCardFormData>();
-  const stripe = useStripe();
   const loadProducts = async () => {
     try {
       const mealData = await AsyncStorage.getItem("Meals");
