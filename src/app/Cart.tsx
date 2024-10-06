@@ -270,7 +270,7 @@ export default function CartScreen() {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <Pressable
+        <TouchableOpacity
           onPress={() => {
             navigation.navigate("PayNow", {});
           }}
@@ -278,7 +278,7 @@ export default function CartScreen() {
         >
           <Icon name={"card"} size={20} color="#eee" style={styles.icon} />
           <Text style={styles.buttonText}>{"Proceed to Payment"}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import {
   CreditCardView,
@@ -136,10 +137,10 @@ export default function PayNowScreen() {
         />
       )}
       <View style={s.buttonContainer}>
-        <Pressable style={s.button}>
+        <TouchableOpacity style={s.button}>
           <Icon name={"card"} size={20} color="#eee" style={s.icon} />
           <Text style={s.buttonText}>{"Pay Now"}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
