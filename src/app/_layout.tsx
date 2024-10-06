@@ -61,6 +61,7 @@ function RootLayoutNav() {
           name="ProductDetails"
           options={{ title: "Product Detail" }}
         />
+        <Stack.Screen name="PayNow" options={{ title: "Payment" }} />
       </Stack>
     </ThemeProvider>
   );

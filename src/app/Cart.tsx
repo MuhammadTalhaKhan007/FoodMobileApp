@@ -7,10 +7,17 @@ import {
   TouchableOpacity,
   SectionList,
   SectionListData,
+  Pressable,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from "react-native-vector-icons/Ionicons";
 
 interface MyProduct {
   id: number;
@@ -29,6 +36,7 @@ interface CartItems {
 }
 
 export default function CartScreen() {
+  const navigation = useNavigation<NavigationProp<any>>();
   const [cartItems, setCartItems] = useState<CartItems>({
     meals: [],
     snacks: [],
@@ -79,12 +87,28 @@ export default function CartScreen() {
   }, []);
 
   const calculateTotalAmount = () => {
+    AsyncStorage.removeItem("Total Amount");
     let total = 0;
     Object.values(cartItems).forEach((items) => {
       items.forEach((item: MyProduct) => {
         total += item.price * item.quantity;
       });
     });
+    AsyncStorage.getItem("Total Amount")
+      .then((isTotalPriceSet) => {
+        if (!isTotalPriceSet) {
+          AsyncStorage.setItem("Total Amount", JSON.stringify(total.toFixed(2)))
+            .then(() => {
+              console.log("Total amount initialized.");
+            })
+            .catch((error) => {
+              console.error("Error setting total amount:", error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Error retrieving total amount:", error);
+      });
     return total.toFixed(2);
   };
 
@@ -107,7 +131,7 @@ export default function CartScreen() {
 
       const mergedItems = currentItems.map((item) => {
         const updatedItem = updatedItems.find((i) => i.id === item.id);
-        return updatedItem ? updatedItem : item; // Return updated item or existing item
+        return updatedItem ? updatedItem : item;
       });
 
       updatedItems.forEach((item) => {
@@ -245,6 +269,17 @@ export default function CartScreen() {
           </Text>
         </View>
       )}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate("PayNow", {});
+          }}
+          style={styles.button}
+        >
+          <Icon name={"card"} size={20} color="#eee" style={styles.icon} />
+          <Text style={styles.buttonText}>{"Pay Now"}</Text>
+        </Pressable>
+      </View>
 
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
@@ -255,6 +290,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   cartTitleContainer: {
     flexDirection: "row",
@@ -354,5 +393,24 @@ const styles = StyleSheet.create({
 
   listContent: {
     paddingBottom: 80,
+  },
+  button: {
+    height: 60,
+    width: 200,
+    backgroundColor: "#132233",
+    borderColor: "rgb(182, 128, 128)",
+    borderWidth: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    marginTop: 20,
+    flexDirection: "row",
+  },
+  buttonText: {
+    color: "#eee",
+    fontSize: 15,
+  },
+  icon: {
+    marginRight: 10,
   },
 });
