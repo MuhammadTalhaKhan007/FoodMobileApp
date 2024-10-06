@@ -71,7 +71,6 @@ const sides: MyProduct[] = [
     quantity: 0,
   },
 ];
-
 AsyncStorage.getItem("Sides")
   .then((isSidesSet) => {
     if (!isSidesSet) {

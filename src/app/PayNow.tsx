@@ -120,20 +120,18 @@ export default function PayNowScreen() {
       const drinkData = await AsyncStorage.getItem("Drinks");
       const snackData = await AsyncStorage.getItem("Snacks");
 
-      setMeals(mealData ? JSON.parse(mealData) : []);
-      setSides(sideData ? JSON.parse(sideData) : []);
-      setDrinks(drinkData ? JSON.parse(drinkData) : []);
-      setSnacks(snackData ? JSON.parse(snackData) : []);
+      setMeals(mealData && JSON.parse(mealData));
+      setSides(sideData && JSON.parse(sideData));
+      setDrinks(drinkData && JSON.parse(drinkData));
+      setSnacks(snackData && JSON.parse(snackData));
     } catch (error) {
       console.error("Error retrieving data:", error);
     }
   };
 
   const resetAllItems = async () => {
-    await loadProducts();
-
     const resetItems = (items: MyProduct[]) =>
-      items?.map((item) => ({
+      items.map((item) => ({
         ...item,
         quantity: 0,
         added: false,
@@ -160,6 +158,9 @@ export default function PayNowScreen() {
       await initializePaymentSheet();
     };
     initializePaymentSheetAsync();
+  }, []);
+  useEffect(() => {
+    loadProducts();
   }, []);
 
   const initializePaymentSheet = async () => {
@@ -199,7 +200,6 @@ export default function PayNowScreen() {
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
       Alert.alert("Success ✅", "The payment was confirmed successfully");
-      console.log(`Meals Array: ${meals}`);
       resetAllItems();
     }
   }
