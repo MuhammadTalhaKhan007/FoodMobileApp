@@ -277,7 +277,7 @@ export default function CartScreen() {
           style={styles.button}
         >
           <Icon name={"card"} size={20} color="#eee" style={styles.icon} />
-          <Text style={styles.buttonText}>{"Pay Now"}</Text>
+          <Text style={styles.buttonText}>{"Proceed to Payment"}</Text>
         </Pressable>
       </View>
 
