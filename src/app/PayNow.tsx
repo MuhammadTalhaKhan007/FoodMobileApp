@@ -6,6 +6,7 @@ import {
   Switch,
   Text,
   View,
+  Pressable,
 } from "react-native";
 import {
   CreditCardView,
@@ -15,6 +16,7 @@ import {
   CreditCardFormField,
   ValidationState,
 } from "react-native-credit-card-input";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const s = StyleSheet.create({
   container: {
@@ -54,10 +56,33 @@ const s = StyleSheet.create({
     }),
   },
   invalidText: {
-    color: "red", // Red color for invalid fields
+    color: "red",
   },
   validText: {
-    color: "black", // Default color for valid fields
+    color: "black",
+  },
+  buttonContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  button: {
+    height: 60,
+    width: 200,
+    backgroundColor: "#132233",
+    borderColor: "rgb(182, 128, 128)",
+    borderWidth: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    marginTop: 20,
+    flexDirection: "row",
+  },
+  buttonText: {
+    color: "#eee",
+    fontSize: 15,
+  },
+  icon: {
+    marginRight: 10,
   },
 });
 
@@ -110,6 +135,12 @@ export default function PayNowScreen() {
           onFocusField={setFocusedField}
         />
       )}
+      <View style={s.buttonContainer}>
+        <Pressable style={s.button}>
+          <Icon name={"card"} size={20} color="#eee" style={s.icon} />
+          <Text style={s.buttonText}>{"Pay Now"}</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
