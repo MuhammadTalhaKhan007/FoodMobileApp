@@ -99,7 +99,7 @@ export default function CartScreen() {
         if (!isTotalPriceSet) {
           AsyncStorage.setItem("Total Amount", JSON.stringify(total.toFixed(2)))
             .then(() => {
-              console.log("Total amount initialized.");
+              return;
             })
             .catch((error) => {
               console.error("Error setting total amount:", error);
