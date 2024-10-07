@@ -150,7 +150,7 @@ export default function PayNowScreen() {
         ["Sides", JSON.stringify(updatedSides)],
         ["Snacks", JSON.stringify(updatedSnacks)],
       ]);
-      navigation.navigate("index");
+      navigation.navigate("ConfirmOrder");
     } catch (error) {
       console.error("Failed to reset AsyncStorage values:", error);
     }
@@ -205,7 +205,6 @@ export default function PayNowScreen() {
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
-      Alert.alert("Success ✅", "The payment was confirmed successfully");
       resetAllItems();
     }
   }
