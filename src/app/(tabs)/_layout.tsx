@@ -159,7 +159,7 @@ export default function TabLayout() {
             </Link>
           ),
           headerRight: () => (
-            <Link href="/Cart" asChild>
+            <Link href="/ConfirmOrder" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <View style={{ position: "relative" }}>
